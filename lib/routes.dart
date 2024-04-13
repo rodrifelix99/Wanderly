@@ -3,4 +3,9 @@
 abstract class Routes {
   static const LAUNCH = '/';
   static const HOME = '/home';
+  static const PERMISSIONS = '/permissions';
+  static const LOCATION_PERMISSION = '$PERMISSIONS$LOCATION';
+  static const NOTIFICATIONS_PERMISSION = '$PERMISSIONS$NOTIFICATIONS';
+  static const LOCATION = '/location';
+  static const NOTIFICATIONS = '/notifications';
 }

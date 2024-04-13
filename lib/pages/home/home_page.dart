@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:wanderly/components/home_page_button.dart';
+import 'package:wanderly/enums/activity_enum.dart';
 import 'package:wanderly/pages/home/home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -9,10 +12,139 @@ class HomePage extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Page'),
+        title: Text(
+          'app_name'.tr,
+          style: Get.textTheme.titleLarge?.copyWith(
+            color: Colors.white,
+            fontSize: 32,
+            shadows: [
+              const Shadow(
+                color: Colors.black26,
+                offset: Offset(2, 2),
+                blurRadius: 25,
+              ),
+            ],
+          ),
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.black54,
+                Colors.transparent,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+        ),
       ),
-      body: Center(
-        child: Text('Home Page'),
+      extendBodyBehindAppBar: true,
+      body: Column(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Obx(
+              () {
+                if (controller.showMap.value) {
+                  return PlatformMap(
+                    initialCameraPosition: const CameraPosition(
+                      target: LatLng(0, 0),
+                      zoom: 0.0,
+                      tilt: 5.0,
+                    ),
+                    markers: <Marker>{
+                      Marker(
+                        markerId: MarkerId('marker_1'),
+                        position: const LatLng(47.6, 8.8796),
+                        consumeTapEvents: true,
+                        infoWindow: const InfoWindow(
+                          title: 'PlatformMarker',
+                          snippet: "Hi I'm a Platform Marker",
+                        ),
+                        onTap: () {
+                          print("Marker tapped");
+                        },
+                      ),
+                    },
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
+                    compassEnabled: false,
+                    onMapCreated: controller.onMapCreated,
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(
+                right: 16.0,
+                left: 16.0,
+                top: 32.0,
+                bottom: 8.0,
+              ),
+              decoration: BoxDecoration(
+                color: Get.theme.colorScheme.surface,
+                // border only on top
+                border: Border(
+                  top: BorderSide(
+                    color: Get.theme.colorScheme.onSurface.withOpacity(0.1),
+                  ),
+                ),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'home_page_title_${controller.selectedTitle}'.tr,
+                      style: Get.textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 16.0),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          HomePageButton(
+                            onPressed: () {},
+                            text: Activity.party.tr(),
+                            icon: Icons.people_alt_rounded,
+                          ),
+                          const SizedBox(width: 8.0),
+                          HomePageButton(
+                            onPressed: () {},
+                            text: Activity.food.tr(),
+                            icon: Icons.restaurant_rounded,
+                          ),
+                          const SizedBox(width: 8.0),
+                          HomePageButton(
+                            onPressed: () {},
+                            text: Activity.culture.tr(),
+                            icon: Icons.brush_rounded,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    HomePageButton(
+                      expanded: false,
+                      onPressed: () {},
+                      text: 'other_activities'.tr,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

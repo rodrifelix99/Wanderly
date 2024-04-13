@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SplashScreen extends StatelessWidget {
-  final Future<Widget> Function() init;
+  final Future<String> Function() init;
 
   const SplashScreen({
     required this.init,
@@ -12,9 +12,9 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSplashScreen.withScreenFunction(
+    return AnimatedSplashScreen.withScreenRouteFunction(
       backgroundColor: Colors.black,
-      screenFunction: init,
+      screenRouteFunction: init,
       splashIconSize: Get.height,
       splash: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
