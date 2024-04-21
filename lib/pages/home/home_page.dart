@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
@@ -48,37 +49,40 @@ class HomePage extends GetView<HomeController> {
           Expanded(
             flex: 2,
             child: Obx(
-              () {
-                if (controller.showMap.value) {
-                  return PlatformMap(
-                    initialCameraPosition: const CameraPosition(
-                      target: LatLng(0, 0),
-                      zoom: 0.0,
-                      tilt: 5.0,
-                    ),
-                    markers: <Marker>{
-                      Marker(
-                        markerId: MarkerId('marker_1'),
-                        position: const LatLng(47.6, 8.8796),
-                        consumeTapEvents: true,
-                        infoWindow: const InfoWindow(
-                          title: 'PlatformMarker',
-                          snippet: "Hi I'm a Platform Marker",
-                        ),
-                        onTap: () {
-                          print("Marker tapped");
-                        },
+              () => FadeIn(
+                delay: const Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 1500),
+                curve: Curves.easeInOut,
+                child: PlatformMap(
+                  initialCameraPosition: const CameraPosition(
+                    target: LatLng(0, 0),
+                    zoom: 0.0,
+                    tilt: 5.0,
+                  ),
+                  markers: <Marker>{
+                    Marker(
+                      markerId: MarkerId('marker_1'),
+                      position: const LatLng(47.6, 8.8796),
+                      consumeTapEvents: true,
+                      infoWindow: const InfoWindow(
+                        title: 'PlatformMarker',
+                        snippet: "Hi I'm a Platform Marker",
                       ),
-                    },
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: false,
-                    compassEnabled: false,
-                    onMapCreated: controller.onMapCreated,
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
+                      onTap: () {
+                        print("Marker tapped");
+                      },
+                    ),
+                  },
+                  scrollGesturesEnabled: controller.showMap.isTrue,
+                  zoomGesturesEnabled: controller.showMap.isTrue,
+                  tiltGesturesEnabled: controller.showMap.isTrue,
+                  rotateGesturesEnabled: controller.showMap.isTrue,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: false,
+                  compassEnabled: false,
+                  onMapCreated: controller.onMapCreated,
+                ),
+              ),
             ),
           ),
           Expanded(
@@ -93,12 +97,18 @@ class HomePage extends GetView<HomeController> {
               ),
               decoration: BoxDecoration(
                 color: Get.theme.colorScheme.surface,
-                // border only on top
-                border: Border(
+                border: Get.isDarkMode ? Border(
                   top: BorderSide(
                     color: Get.theme.colorScheme.onSurface.withOpacity(0.1),
                   ),
-                ),
+                ) : null,
+                boxShadow: Get.isDarkMode ? null : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, -2),
+                    blurRadius: 4,
+                  ),
+                ],
               ),
               child: SafeArea(
                 top: false,
@@ -114,7 +124,7 @@ class HomePage extends GetView<HomeController> {
                       child: Row(
                         children: [
                           HomePageButton(
-                            onPressed: () {},
+                            onPressed: () => controller.onActivitySelected(Activity.party),
                             text: Activity.party.tr(),
                             icon: Icons.people_alt_rounded,
                           ),
@@ -137,7 +147,10 @@ class HomePage extends GetView<HomeController> {
                     HomePageButton(
                       expanded: false,
                       onPressed: () {},
-                      text: 'other_activities'.tr,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16.0,
+                      ),
+                      text: 'more_activities'.tr,
                     ),
                   ],
                 ),

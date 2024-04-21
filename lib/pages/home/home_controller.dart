@@ -3,12 +3,15 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:wanderly/enums/activity_enum.dart';
 import 'package:wanderly/routes.dart';
 import 'package:wanderly/services/location_service.dart';
+import 'package:wanderly/services/nearby_service.dart';
 import 'package:wanderly/services/snackbar_service.dart';
 
 class HomeController extends GetxController {
   final Logger _logger = Logger();
+  final NearbyService _nearbyService = Get.find<NearbyService>();
   final LocationService _locationService = Get.find<LocationService>();
   final SnackBarService _snackBarService = SnackBarService();
   final RxBool showMap = false.obs;
@@ -64,5 +67,25 @@ class HomeController extends GetxController {
         );
       },
     );
+  }
+
+  Future<void> onActivitySelected(Activity activity) async {
+    try {
+      final locationData = await _locationService.getLocation();
+      if (locationData == null) {
+        return _logger.e('Error getting location data');
+      }
+      await _nearbyService.getNearbyPlaces(
+        LatLng(locationData.latitude!, locationData.longitude!),
+        radius: 1000,
+        activity: activity,
+      );
+    } catch (e) {
+      _logger.e(e);
+      _snackBarService.showSnackBar(
+        title: 'Nearby Places',
+        message: 'Error getting nearby places',
+      );
+    }
   }
 }

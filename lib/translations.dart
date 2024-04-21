@@ -29,6 +29,7 @@ class Languages extends Translations {
       'nature': 'Nature',
       'other': 'Other',
       'other_activities': 'Other activities',
+      'more_activities': 'More activities',
     },
   };
 }
