@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:wanderly/components/home_page_button.dart';
 import 'package:wanderly/enums/activity_enum.dart';
+import 'package:wanderly/models/feature.dart';
 import 'package:wanderly/routes.dart';
 import 'package:wanderly/services/location_service.dart';
 import 'package:wanderly/services/nearby_service.dart';
@@ -17,15 +19,20 @@ class HomeController extends GetxController {
   final RxBool showMap = false.obs;
   late PlatformMapController mapController;
   late final int selectedTitle;
+  final RxBool isLoading = false.obs;
+  final RxList<HomePageButton> homePageButtons = <HomePageButton>[].obs;
+  final RxSet<Marker> markers = <Marker>{}.obs;
 
   @override
   void onInit() {
+    isLoading.value = true;
     selectedTitle = Random().nextInt(10) + 1;
-    checkPermissions();
+    _checkPermissions();
+    _buildHomePageButtons();
     super.onInit();
   }
 
-  Future<void> checkPermissions() async {
+  Future<void> _checkPermissions() async {
     await _checkLocationPermission();
   }
 
@@ -43,11 +50,14 @@ class HomeController extends GetxController {
         title: 'Location Permission',
         message: 'Error checking location permission',
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 
   Future<void> onMapCreated(PlatformMapController controller) async {
     mapController = controller;
+    centerMap();
   }
 
   Future<void> centerMap() async {
@@ -71,14 +81,30 @@ class HomeController extends GetxController {
 
   Future<void> onActivitySelected(Activity activity) async {
     try {
+      isLoading.value = true;
       final locationData = await _locationService.getLocation();
-      if (locationData == null) {
+      final lat = locationData?.latitude;
+      final lng = locationData?.longitude;
+      if (lat == null || lng == null) {
         return _logger.e('Error getting location data');
       }
-      await _nearbyService.getNearbyPlaces(
-        LatLng(locationData.latitude!, locationData.longitude!),
+      final points = await _nearbyService.getNearbyPlaces(
+        LatLng(lat, lng),
         radius: 1000,
         activity: activity,
+      );
+
+      if (points.isEmpty) {
+        _snackBarService.showSnackBar(
+          title: 'Nearby Places',
+          message: 'No places found nearby',
+        );
+        return;
+      }
+      markers.assignAll(
+        points.map(
+          (e) => _toMarker(e),
+        ),
       );
     } catch (e) {
       _logger.e(e);
@@ -86,6 +112,60 @@ class HomeController extends GetxController {
         title: 'Nearby Places',
         message: 'Error getting nearby places',
       );
+    } finally {
+      isLoading.value = false;
     }
+  }
+
+  Marker _toMarker(Feature feature) {
+    return Marker(
+      markerId: MarkerId(feature.featureProperties.osmId.toString()),
+      position: LatLng(
+        feature.geometry.coordinates[1],
+        feature.geometry.coordinates[0],
+      ),
+      infoWindow: InfoWindow(
+        title: feature.featureProperties.name,
+        snippet: _locationService.distanceBetween(
+          feature.geometry.coordinates[1],
+          feature.geometry.coordinates[0],
+        ),
+      ),
+    );
+  }
+
+  void _buildHomePageButtons() {
+    // load 3 home page buttons based on time and day of the week
+    final now = DateTime.now();
+    final day = now.weekday;
+    final hour = now.hour;
+    Set<Activity> allActivities = Activity.values.toSet();
+    allActivities.removeWhere((element) => element == Activity.other);
+
+    if (day != DateTime.saturday && day != DateTime.friday) {
+      allActivities.removeWhere((element) => element == Activity.party);
+      if (hour < 12) {
+        allActivities.removeWhere((element) => element == Activity.music);
+      } else if (hour < 18 && hour >= 14) {
+        allActivities.removeWhere((element) => element == Activity.food);
+      } else {
+        allActivities.removeWhere((element) => element == Activity.culture);
+      }
+    } else {
+      allActivities.removeWhere((element) => element == Activity.knowledge);
+    }
+
+    final res = allActivities
+        .map(
+          (activity) => HomePageButton(
+            onPressed: () => onActivitySelected(activity),
+            text: activity.tr(),
+            icon: activity.icon,
+          ),
+        )
+        .toList();
+    res.shuffle();
+
+    homePageButtons.assignAll(res.length > 3 ? res.sublist(0, 3) : res);
   }
 }

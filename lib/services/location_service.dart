@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 
@@ -47,5 +49,31 @@ class LocationService extends GetxService {
   Future<bool> requestService() async {
     final serviceEnabled = await _location.requestService();
     return serviceEnabled;
+  }
+
+  String distanceBetween(double endLatitude, double endLongitude) {
+    double startLatitude = _locationData?.latitude ?? 0;
+    double startLongitude = _locationData?.longitude ?? 0;
+    const int radiusOfEarthKm = 6371;
+    var latDistance = _toRadians(endLatitude - startLatitude);
+    var lonDistance = _toRadians(endLongitude - startLongitude);
+
+    var a = sin(latDistance / 2) * sin(latDistance / 2) +
+        cos(_toRadians(startLatitude)) *
+            cos(_toRadians(endLatitude)) *
+            sin(lonDistance / 2) *
+            sin(lonDistance / 2);
+
+    var c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    var distance = radiusOfEarthKm * c * 1000; // convert to meters
+
+    return distance < 1000
+        ? '${distance.toStringAsFixed(2)} m'
+        : '${(distance / 1000).toStringAsFixed(2)} km';
+  }
+
+  double _toRadians(double degree) {
+    return degree * pi / 180;
   }
 }

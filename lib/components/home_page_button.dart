@@ -5,12 +5,14 @@ class HomePageButton extends StatelessWidget {
   final bool expanded;
   final void Function() onPressed;
   final EdgeInsets? padding;
+  final EdgeInsets? margin;
   final String text;
   final IconData? icon;
 
   const HomePageButton({
     super.key,
     this.padding,
+    this.margin,
     this.expanded = true,
     required this.onPressed,
     required this.text,
@@ -24,6 +26,7 @@ class HomePageButton extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: padding ?? const EdgeInsets.all(8),
+        margin: margin,
         decoration: BoxDecoration(
           color: Get.theme.colorScheme.surfaceVariant.withOpacity(0.5),
           borderRadius: BorderRadius.circular(8),

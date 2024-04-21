@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
 import 'package:wanderly/components/home_page_button.dart';
-import 'package:wanderly/enums/activity_enum.dart';
 import 'package:wanderly/pages/home/home_controller.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -49,40 +48,34 @@ class HomePage extends GetView<HomeController> {
           Expanded(
             flex: 2,
             child: Obx(
-              () => FadeIn(
-                delay: const Duration(milliseconds: 500),
-                duration: const Duration(milliseconds: 1500),
-                curve: Curves.easeInOut,
-                child: PlatformMap(
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(0, 0),
-                    zoom: 0.0,
-                    tilt: 5.0,
-                  ),
-                  markers: <Marker>{
-                    Marker(
-                      markerId: MarkerId('marker_1'),
-                      position: const LatLng(47.6, 8.8796),
-                      consumeTapEvents: true,
-                      infoWindow: const InfoWindow(
-                        title: 'PlatformMarker',
-                        snippet: "Hi I'm a Platform Marker",
+              () => controller.isLoading.isTrue
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : FadeIn(
+                      delay: const Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 1500),
+                      curve: Curves.easeInOut,
+                      child: Obx(
+                        () => PlatformMap(
+                          initialCameraPosition: const CameraPosition(
+                            target: LatLng(0, 0),
+                            zoom: 0.0,
+                            tilt: 5.0,
+                          ),
+                          markers: controller.markers,
+                          scrollGesturesEnabled: controller.showMap.isTrue,
+                          zoomGesturesEnabled: controller.showMap.isTrue,
+                          tiltGesturesEnabled: controller.showMap.isTrue,
+                          rotateGesturesEnabled: controller.showMap.isTrue,
+                          myLocationEnabled: true,
+                          myLocationButtonEnabled: true,
+                          compassEnabled: false,
+                          zoomControlsEnabled: false,
+                          onMapCreated: controller.onMapCreated,
+                        ),
                       ),
-                      onTap: () {
-                        print("Marker tapped");
-                      },
                     ),
-                  },
-                  scrollGesturesEnabled: controller.showMap.isTrue,
-                  zoomGesturesEnabled: controller.showMap.isTrue,
-                  tiltGesturesEnabled: controller.showMap.isTrue,
-                  rotateGesturesEnabled: controller.showMap.isTrue,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: false,
-                  compassEnabled: false,
-                  onMapCreated: controller.onMapCreated,
-                ),
-              ),
             ),
           ),
           Expanded(
@@ -97,18 +90,23 @@ class HomePage extends GetView<HomeController> {
               ),
               decoration: BoxDecoration(
                 color: Get.theme.colorScheme.surface,
-                border: Get.isDarkMode ? Border(
-                  top: BorderSide(
-                    color: Get.theme.colorScheme.onSurface.withOpacity(0.1),
-                  ),
-                ) : null,
-                boxShadow: Get.isDarkMode ? null : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    offset: const Offset(0, -2),
-                    blurRadius: 4,
-                  ),
-                ],
+                border: Get.isDarkMode
+                    ? Border(
+                        top: BorderSide(
+                          color:
+                              Get.theme.colorScheme.onSurface.withOpacity(0.1),
+                        ),
+                      )
+                    : null,
+                boxShadow: Get.isDarkMode
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          offset: const Offset(0, -2),
+                          blurRadius: 4,
+                        ),
+                      ],
               ),
               child: SafeArea(
                 top: false,
@@ -122,24 +120,14 @@ class HomePage extends GetView<HomeController> {
                     const SizedBox(height: 16.0),
                     Expanded(
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          HomePageButton(
-                            onPressed: () => controller.onActivitySelected(Activity.party),
-                            text: Activity.party.tr(),
-                            icon: Icons.people_alt_rounded,
-                          ),
-                          const SizedBox(width: 8.0),
-                          HomePageButton(
-                            onPressed: () {},
-                            text: Activity.food.tr(),
-                            icon: Icons.restaurant_rounded,
-                          ),
-                          const SizedBox(width: 8.0),
-                          HomePageButton(
-                            onPressed: () {},
-                            text: Activity.culture.tr(),
-                            icon: Icons.brush_rounded,
-                          ),
+                          // between the buttons we have a spacer
+                          for (var button in controller.homePageButtons) ...[
+                            button,
+                            if (button != controller.homePageButtons.last)
+                              const SizedBox(width: 8.0),
+                          ],
                         ],
                       ),
                     ),
