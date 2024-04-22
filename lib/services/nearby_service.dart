@@ -15,18 +15,9 @@ class NearbyService extends GetxService {
     required Activity activity,
   }) async {
     try {
-      final boundBox = LatLngBounds(
-        southwest: LatLng(
-          coords.latitude - (radius / 111111),
-          coords.longitude - (radius / 111111),
-        ),
-        northeast: LatLng(
-          coords.latitude + (radius / 111111),
-          coords.longitude + (radius / 111111),
-        ),
-      );
       final ApiResponse res = await MapApi.searchPlaces(
-        boundBox,
+        coords,
+        radius: radius,
         categoryIds: activity.categoryIds,
       );
       return res.features;

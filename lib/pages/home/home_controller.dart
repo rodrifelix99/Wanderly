@@ -85,6 +85,7 @@ class HomeController extends GetxController {
   }) async {
     try {
       isLoading.value = true;
+      markers.clear();
       final locationData = await _locationService.getLocation();
       final lat = locationData?.latitude;
       final lng = locationData?.longitude;
@@ -97,14 +98,14 @@ class HomeController extends GetxController {
         activity: activity,
       );
 
-      if (points.isEmpty && radius > 100000) {
+      if (points.isEmpty && radius >= 2000) {
         _snackBarService.showSnackBar(
           title: 'error'.tr,
           message: 'no_places_found'.tr,
         );
         return;
       } else if (points.isEmpty) {
-        return onActivitySelected(activity, radius: radius + 10000);
+        return onActivitySelected(activity, radius: radius + 1000);
       }
 
       markers.assignAll(

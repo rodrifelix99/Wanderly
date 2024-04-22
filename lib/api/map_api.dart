@@ -13,26 +13,21 @@ abstract class MapApi {
   static const String _api = 'https://api.openrouteservice.org';
 
   static Future<dynamic> searchPlaces(
-    LatLngBounds boundBox, {
+    LatLng geoPoint, {
+    int radius = 1000,
     List<int> categoryIds = const [],
   }) async {
     final body = {
-      {
-        "request": "pois",
-        "geometry": {
-          "bbox": [
-            [8.8034, 53.0756],
-            [8.7834, 53.0456]
-          ],
-          "geojson": {
-            "type": "Point",
-            "coordinates": [8.8034, 53.0756]
-          },
-          "buffer": 200
+      "request": "pois",
+      "geometry": {
+        "geojson": {
+          "type": "Point",
+          "coordinates": [geoPoint.longitude, geoPoint.latitude]
         },
-        "filters": {
-          "category_ids": [570]
-        }
+        "buffer": radius,
+      },
+      "filters": {
+        "category_ids": [...categoryIds]
       }
     };
     final response = await http.post(
@@ -46,7 +41,7 @@ abstract class MapApi {
       final ApiResponse responseJson = ApiResponse.fromJson(body);
       return responseJson;
     } else {
-      throw Exception('API error ${response.statusCode}');
+      throw Exception('API error ${response.statusCode}, ${response.body}');
     }
   }
 }
