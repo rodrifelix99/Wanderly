@@ -1,8 +1,10 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 class SnackBarService {
+  final Logger _logger = Logger();
   void showSnackBar({
     required String title,
     required String message,
@@ -27,13 +29,14 @@ class SnackBarService {
         shouldIconPulse: true,
         barBlur: 20,
         isDismissible: true,
+        duration: const Duration(seconds: 3),
         forwardAnimationCurve: Curves.easeOutBack,
         reverseAnimationCurve: Curves.easeInBack,
         animationDuration: const Duration(milliseconds: 500),
       );
       Get.showSnackbar(snackBar);
     } catch (e) {
-      print('Error showing snackbar: $e');
+      _logger.e(e);
     }
   }
 

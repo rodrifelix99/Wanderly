@@ -12,24 +12,33 @@ abstract class MapApi {
   };
   static const String _api = 'https://api.openrouteservice.org';
 
-  static Future<dynamic> searchPlaces(LatLngBounds boundBox, {
+  static Future<dynamic> searchPlaces(
+    LatLngBounds boundBox, {
     List<int> categoryIds = const [],
   }) async {
+    final body = {
+      {
+        "request": "pois",
+        "geometry": {
+          "bbox": [
+            [8.8034, 53.0756],
+            [8.7834, 53.0456]
+          ],
+          "geojson": {
+            "type": "Point",
+            "coordinates": [8.8034, 53.0756]
+          },
+          "buffer": 200
+        },
+        "filters": {
+          "category_ids": [570]
+        }
+      }
+    };
     final response = await http.post(
       Uri.parse('$_api/pois'),
       headers: _headers,
-      body: jsonEncode({
-        "request": "pois",
-        "filters": {
-          "category_ids": categoryIds,
-        },
-        "geometry": {
-          "bbox": [
-            [boundBox.southwest.longitude, boundBox.southwest.latitude],
-            [boundBox.northeast.longitude, boundBox.northeast.latitude]
-          ],
-        }
-      }),
+      body: jsonEncode(body),
     );
 
     if (response.statusCode == 200) {
@@ -37,7 +46,7 @@ abstract class MapApi {
       final ApiResponse responseJson = ApiResponse.fromJson(body);
       return responseJson;
     } else {
-      throw Exception('Failed to load places');
+      throw Exception('API error ${response.statusCode}');
     }
   }
 }

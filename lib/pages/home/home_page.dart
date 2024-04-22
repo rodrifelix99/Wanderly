@@ -134,7 +134,7 @@ class HomePage extends GetView<HomeController> {
                     const SizedBox(height: 8.0),
                     HomePageButton(
                       expanded: false,
-                      onPressed: () {},
+                      onPressed: controller.showBottomSheet,
                       padding: const EdgeInsets.symmetric(
                         vertical: 16.0,
                       ),

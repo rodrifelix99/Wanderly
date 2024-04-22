@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
+import 'package:wanderly/components/activity_list.dart';
 import 'package:wanderly/components/home_page_button.dart';
 import 'package:wanderly/enums/activity_enum.dart';
 import 'package:wanderly/models/feature.dart';
@@ -79,7 +80,9 @@ class HomeController extends GetxController {
     );
   }
 
-  Future<void> onActivitySelected(Activity activity) async {
+  Future<void> onActivitySelected(Activity activity, {
+    int radius = 1000,
+  }) async {
     try {
       isLoading.value = true;
       final locationData = await _locationService.getLocation();
@@ -90,17 +93,20 @@ class HomeController extends GetxController {
       }
       final points = await _nearbyService.getNearbyPlaces(
         LatLng(lat, lng),
-        radius: 1000,
+        radius: radius,
         activity: activity,
       );
 
-      if (points.isEmpty) {
+      if (points.isEmpty && radius > 100000) {
         _snackBarService.showSnackBar(
-          title: 'Nearby Places',
-          message: 'No places found nearby',
+          title: 'error'.tr,
+          message: 'no_places_found'.tr,
         );
         return;
+      } else if (points.isEmpty) {
+        return onActivitySelected(activity, radius: radius + 10000);
       }
+
       markers.assignAll(
         points.map(
           (e) => _toMarker(e),
@@ -109,8 +115,8 @@ class HomeController extends GetxController {
     } catch (e) {
       _logger.e(e);
       _snackBarService.showSnackBar(
-        title: 'Nearby Places',
-        message: 'Error getting nearby places',
+        title: 'error'.tr,
+        message: 'error_subtitle'.tr,
       );
     } finally {
       isLoading.value = false;
@@ -167,5 +173,17 @@ class HomeController extends GetxController {
     res.shuffle();
 
     homePageButtons.assignAll(res.length > 3 ? res.sublist(0, 3) : res);
+  }
+
+  void showBottomSheet() {
+    Get.bottomSheet(
+      ActivityList(
+        onTap: (activity) {
+          Get.back();
+          onActivitySelected(activity);
+        },
+      ),
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
+    );
   }
 }

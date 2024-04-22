@@ -9,6 +9,11 @@ class Languages extends Translations {
       'location_permission_title': 'Let\'s get started',
       'location_permission_message': 'We need your location to unlock the full experience',
       'location_permission_request': 'Request Location Permission',
+      'error': 'Error',
+      'error_subtitle': 'Something went wrong',
+      'no_places_found': 'No places found',
+
+      // Home page titles
       'home_page_title_1': 'Hey there!',
       'home_page_title_2': 'So what\'s the plan?',
       'home_page_title_3': 'Where to next?',
@@ -19,6 +24,8 @@ class Languages extends Translations {
       'home_page_title_8': 'What are you looking for?',
       'home_page_title_9': 'What are you craving?',
       'home_page_title_10': 'What are you feeling?',
+
+      // Activity categories
       'party': 'Party',
       'food': 'Food',
       'knowledge': 'Knowledge',
