@@ -132,7 +132,7 @@ class HomeController extends GetxController {
         feature.geometry.coordinates[0],
       ),
       infoWindow: InfoWindow(
-        title: feature.featureProperties.name,
+        title: feature.featureProperties.name ?? 'Unknown',
         snippet: _locationService.distanceBetween(
           feature.geometry.coordinates[1],
           feature.geometry.coordinates[0],
@@ -168,6 +168,8 @@ class HomeController extends GetxController {
             onPressed: () => onActivitySelected(activity),
             text: activity.tr(),
             icon: activity.icon,
+            width: Get.width / 3.5,
+            height: 125.0,
           ),
         )
         .toList();

@@ -2,8 +2,8 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:platform_maps_flutter/platform_maps_flutter.dart';
-import 'package:wanderly/components/home_page_button.dart';
 import 'package:wanderly/pages/home/home_controller.dart';
+import 'package:wanderly/pages/home/views/activity_selector.dart';
 
 class HomePage extends GetView<HomeController> {
   const HomePage({super.key});
@@ -43,10 +43,9 @@ class HomePage extends GetView<HomeController> {
         ),
       ),
       extendBodyBehindAppBar: true,
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            flex: 2,
+          Positioned.fill(
             child: Obx(
               () => controller.isLoading.isTrue
                   ? const Center(
@@ -64,24 +63,30 @@ class HomePage extends GetView<HomeController> {
                             tilt: 5.0,
                           ),
                           markers: controller.markers,
-                          scrollGesturesEnabled: controller.showMap.isTrue,
-                          zoomGesturesEnabled: controller.showMap.isTrue,
-                          tiltGesturesEnabled: controller.showMap.isTrue,
+                          scrollGesturesEnabled: false,
+                          zoomGesturesEnabled: false,
+                          tiltGesturesEnabled: false,
                           rotateGesturesEnabled: controller.showMap.isTrue,
                           myLocationEnabled: true,
                           myLocationButtonEnabled: true,
                           compassEnabled: false,
                           zoomControlsEnabled: false,
                           onMapCreated: controller.onMapCreated,
+                          padding: const EdgeInsets.only(
+                            top: 100,
+                            bottom: 300,
+                          ),
                         ),
                       ),
                     ),
             ),
           ),
-          Expanded(
-            flex: 1,
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: Container(
-              width: double.infinity,
+              height: 300,
               padding: const EdgeInsets.only(
                 right: 16.0,
                 left: 16.0,
@@ -90,6 +95,10 @@ class HomePage extends GetView<HomeController> {
               ),
               decoration: BoxDecoration(
                 color: Get.theme.colorScheme.surface,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16.0),
+                ),
                 border: Get.isDarkMode
                     ? Border(
                         top: BorderSide(
@@ -108,40 +117,9 @@ class HomePage extends GetView<HomeController> {
                         ),
                       ],
               ),
-              child: SafeArea(
+              child: const SafeArea(
                 top: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'home_page_title_${controller.selectedTitle}'.tr,
-                      style: Get.textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 16.0),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // between the buttons we have a spacer
-                          for (var button in controller.homePageButtons) ...[
-                            button,
-                            if (button != controller.homePageButtons.last)
-                              const SizedBox(width: 8.0),
-                          ],
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    HomePageButton(
-                      expanded: false,
-                      onPressed: controller.showBottomSheet,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16.0,
-                      ),
-                      text: 'more_activities'.tr,
-                    ),
-                  ],
-                ),
+                child: ActivitySelectorView(),
               ),
             ),
           ),
