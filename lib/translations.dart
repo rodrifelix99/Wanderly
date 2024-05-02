@@ -12,6 +12,16 @@ class Languages extends Translations {
       'error': 'Error',
       'error_subtitle': 'Something went wrong',
       'no_places_found': 'No places found',
+      'next': 'Next',
+
+      // Login strings
+      'welcome_1': 'Welcome',
+      'welcome_1_subtitle': 'Have we met before?\nIf not, let\'s get to know each other',
+      'welcome_2': 'Wanderly is a game',
+      'welcome_2_subtitle': 'We give you a quest for you and your friends based on places around you and the vibe you\'re in',
+      'welcome_3': 'Take your quest and go wander',
+      'welcome_3_subtitle': 'Visit the place you got and take a photo with your friends to complete the quest.\nComplete quests to earn rewards and unlock new tiers.',
+      'error_sign_in': 'Error signing in',
 
       // Home page titles
       'home_page_title_1': 'Hey there!',

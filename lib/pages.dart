@@ -3,6 +3,8 @@ import 'package:wanderly/components/splash_screen.dart';
 import 'package:wanderly/main.dart';
 import 'package:wanderly/pages/home/home_binding.dart';
 import 'package:wanderly/pages/home/home_page.dart';
+import 'package:wanderly/pages/login/login_binding.dart';
+import 'package:wanderly/pages/login/login_page.dart';
 import 'package:wanderly/pages/permissions/location/location_permission.dart';
 import 'package:wanderly/pages/permissions/permissions_binding.dart';
 import 'package:wanderly/routes.dart';
@@ -11,6 +13,11 @@ final appPages = [
   GetPage(
     name: Routes.LAUNCH,
     page: () => const SplashScreen(init: init),
+  ),
+  GetPage(
+    name: Routes.LOGIN,
+    page: () => const LoginPage(),
+    binding: LoginBinding(),
   ),
   GetPage(
     name: Routes.HOME,

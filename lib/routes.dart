@@ -2,6 +2,7 @@
 
 abstract class Routes {
   static const LAUNCH = '/';
+  static const LOGIN = '/login';
   static const HOME = '/home';
   static const PERMISSIONS = '/permissions';
   static const LOCATION_PERMISSION = '$PERMISSIONS$LOCATION';

@@ -8,29 +8,48 @@ import 'package:wanderly/components/home_page_button.dart';
 import 'package:wanderly/enums/activity_enum.dart';
 import 'package:wanderly/models/feature.dart';
 import 'package:wanderly/routes.dart';
+import 'package:wanderly/services/auth_service.dart';
 import 'package:wanderly/services/location_service.dart';
 import 'package:wanderly/services/nearby_service.dart';
 import 'package:wanderly/services/snackbar_service.dart';
 
 class HomeController extends GetxController {
   final Logger _logger = Logger();
+  final AuthService _authService = Get.find<AuthService>();
   final NearbyService _nearbyService = Get.find<NearbyService>();
   final LocationService _locationService = Get.find<LocationService>();
   final SnackBarService _snackBarService = SnackBarService();
   final RxBool showMap = false.obs;
   late PlatformMapController mapController;
-  late final int selectedTitle;
+  int selectedTitle = 1;
   final RxBool isLoading = false.obs;
   final RxList<HomePageButton> homePageButtons = <HomePageButton>[].obs;
   final RxSet<Marker> markers = <Marker>{}.obs;
 
   @override
-  void onInit() {
-    isLoading.value = true;
-    selectedTitle = Random().nextInt(10) + 1;
-    _checkPermissions();
-    _buildHomePageButtons();
-    super.onInit();
+  void onReady() {
+    try {
+      _subscribeAuthChanges();
+      selectedTitle = Random().nextInt(10) + 1;
+      _checkPermissions();
+      _buildHomePageButtons();
+    } catch (e) {
+      _logger.e(e);
+    } finally {
+      super.onReady();
+    }
+  }
+
+  void _subscribeAuthChanges() {
+    if (_authService.user == null) {
+      Get.offAllNamed(Routes.LOGIN);
+    } else {
+      _authService.authStream.listen((user) {
+        if (user == null) {
+          Get.offAllNamed(Routes.LOGIN);
+        }
+      });
+    }
   }
 
   Future<void> _checkPermissions() async {
@@ -80,7 +99,8 @@ class HomeController extends GetxController {
     );
   }
 
-  Future<void> onActivitySelected(Activity activity, {
+  Future<void> onActivitySelected(
+    Activity activity, {
     int radius = 1000,
   }) async {
     try {
@@ -188,5 +208,9 @@ class HomeController extends GetxController {
       ),
       backgroundColor: Get.theme.scaffoldBackgroundColor,
     );
+  }
+
+  Future<void> signOut() async {
+    await _authService.signOut();
   }
 }

@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class AuthService extends GetxService {
   final Logger _logger = Logger();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Stream<User?> get user => _auth.authStateChanges();
+  Stream<User?> get authStream => _auth.authStateChanges();
+  User? get user => _auth.currentUser;
 
   Future<void> signIn(String provider) async {
     try {
@@ -27,13 +30,34 @@ class AuthService extends GetxService {
   }
 
   Future<void> _signInWithGoogle() async {
-    final googleProvider = GoogleAuthProvider();
-    await _auth.signInWithProvider(googleProvider);
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    final GoogleSignInAuthentication? googleAuth =
+    await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    await _auth.signInWithCredential(credential);
   }
 
   Future<void> _signInWithApple() async {
-    final appleProvider = AppleAuthProvider();
-    await _auth.signInWithProvider(appleProvider);
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    final oAuthProvider = OAuthProvider('apple.com');
+    final credential = oAuthProvider.credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+
+    await _auth.signInWithCredential(credential);
   }
 
   Future<void> signOut() async {
