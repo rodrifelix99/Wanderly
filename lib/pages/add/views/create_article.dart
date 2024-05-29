@@ -57,30 +57,35 @@ class CreateArticle extends StatelessWidget {
     ),
   );
 
+  Widget get scanningImage => Center(
+    child: SizedBox(
+      width: Get.width / 2,
+      height: Get.width / 2,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16.0),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.file(
+                image,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned.fill(
+              child: Lottie.asset('assets/images/scanning.json'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: isScanning ? Center(
-            child: SizedBox(
-              width: Get.width / 2,
-              height: Get.width / 2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Image.file(image),
-                    ),
-                    Positioned.fill(
-                      child: Lottie.asset('assets/images/scanning.json'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ) : SingleChildScrollView(
+          child: isScanning ? scanningImage : SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

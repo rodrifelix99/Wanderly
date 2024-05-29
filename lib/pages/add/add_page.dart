@@ -23,12 +23,12 @@ class AddPage extends GetView<AddPageController> {
           switch (index) {
             case 0:
               return Obx(
-                () => controller.cameraController.value != null ||
-                        controller.loading.isTrue
+                () => controller.cameraController.value != null &&
+                        controller.loading.isFalse
                     ? ScanArticle(
                         controller: controller.cameraController.value!,
                         onCapture: () =>
-                            controller.onCapture(selectImage: true),
+                            controller.onCapture(selectImage: false),
                       )
                     : const Center(
                         child: CircularProgressIndicator(),

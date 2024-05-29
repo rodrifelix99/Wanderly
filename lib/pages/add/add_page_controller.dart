@@ -91,6 +91,7 @@ class AddPageController extends GetxController {
   Future<void> _computeImage(File imageFile) async {
     await Future.delayed(const Duration(seconds: 5));
     final labels = await AiService.computeImage(imageFile);
+    _logger.i(labels.map((e) => '${e.label} (${e.confidence})\n').toList());
     labels.sort((a, b) => b.confidence.compareTo(a.confidence));
     titleController.text = labels.first.label;
     category.value = labels.first.label;

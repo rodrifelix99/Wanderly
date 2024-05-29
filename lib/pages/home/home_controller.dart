@@ -27,6 +27,7 @@ class HomeController extends GetxController {
     try {
       _subscribeAuthChanges();
       _checkPermissions();
+      getArticles();
     } catch (e) {
       _logger.e(e);
     } finally {
@@ -36,6 +37,7 @@ class HomeController extends GetxController {
 
   Future<void> getArticles() async {
     try {
+      isLoading.value = true;
       clothes.value = await _wardrobeService.getArticles();
     } catch (e) {
       _logger.e(e);
@@ -43,6 +45,8 @@ class HomeController extends GetxController {
         title: 'Wardrobe',
         message: 'Error getting articles',
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 
