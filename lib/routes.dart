@@ -9,4 +9,5 @@ abstract class Routes {
   static const NOTIFICATIONS_PERMISSION = '$PERMISSIONS$NOTIFICATIONS';
   static const LOCATION = '/location';
   static const NOTIFICATIONS = '/notifications';
+  static const ADD = '/add';
 }

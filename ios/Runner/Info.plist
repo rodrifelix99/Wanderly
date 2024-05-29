@@ -53,5 +53,11 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Wanderly needs access to your photo library to set profile picture</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Wanderly needs access to your camera to take photos</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Wanderly needs access to your microphone to record audio</string>
 </dict>
 </plist>

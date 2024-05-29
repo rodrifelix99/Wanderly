@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:wanderly/components/splash_screen.dart';
 import 'package:wanderly/main.dart';
+import 'package:wanderly/pages/add/add_page.dart';
+import 'package:wanderly/pages/add/add_page_binding.dart';
 import 'package:wanderly/pages/home/home_binding.dart';
 import 'package:wanderly/pages/home/home_page.dart';
 import 'package:wanderly/pages/login/login_binding.dart';
@@ -40,5 +42,10 @@ final appPages = [
         page: () => const HomePage(),
       ),
     ],
+  ),
+  GetPage(
+      name: Routes.ADD,
+      binding: AddPageBinding(),
+      page: () => const AddPage(),
   ),
 ];

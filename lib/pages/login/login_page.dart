@@ -11,11 +11,11 @@ class LoginPage extends GetView<LoginController> {
   String imageUrl(int index) {
     switch (index) {
       case 0:
-        return 'assets/images/welcome/sun.gif';
+        return 'assets/images/welcome/welcome.json';
       case 1:
-        return 'assets/images/welcome/location.gif';
+        return 'assets/images/welcome/clothes.json';
       case 2:
-        return 'assets/images/welcome/camera.gif';
+        return 'assets/images/welcome/ai.json';
       default:
         return '';
     }
@@ -60,17 +60,18 @@ class LoginPage extends GetView<LoginController> {
           switch (index) {
             case 3:
               return AuthView(
-                  onGoogleSignIn: controller.signInWithGoogle,
-                  onAppleSignIn: controller.signInWithApple,
-                  showAppleSignIn: controller.showAppleSignIn.value,
+                onGoogleSignIn: controller.signInWithGoogle,
+                onAppleSignIn: controller.signInWithApple,
+                showAppleSignIn: controller.showAppleSignIn.value,
+                onOpenTermsAndConditions: controller.openTermsAndConditions,
               );
             default:
               return WelcomeView(
-                  imageUrl: imageUrl(index),
-                  title: title(index),
-                  subtitle: subtitle(index),
-                  onTap: () => controller.swiperController.next(),
-                  buttonText: 'next'.tr,
+                imageUrl: imageUrl(index),
+                title: title(index),
+                subtitle: subtitle(index),
+                onTap: () => controller.swiperController.next(),
+                buttonText: 'next'.tr,
               );
           }
         },

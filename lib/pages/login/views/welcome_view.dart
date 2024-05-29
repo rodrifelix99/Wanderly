@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 class WelcomeView extends StatelessWidget {
   final String imageUrl;
@@ -27,11 +28,12 @@ class WelcomeView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const Spacer(),
-            Image.asset(
+            Lottie.asset(
               imageUrl,
               width: Get.width * 0.8,
               height: Get.width * 0.8,
               fit: BoxFit.contain,
+              repeat: false,
             ),
             const Spacer(),
             Padding(

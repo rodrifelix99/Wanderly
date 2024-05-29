@@ -61,4 +61,8 @@ class LoginController extends GetxController {
   void _redirectToHome() {
     Get.offAllNamed(Routes.HOME);
   }
+
+  void openTermsAndConditions() {
+    // Open the terms and conditions page
+  }
 }
