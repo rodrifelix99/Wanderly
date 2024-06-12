@@ -37,14 +37,14 @@ const ArticleSchema = CollectionSchema(
       name: r'imagePath',
       type: IsarType.string,
     ),
-    r'mainCategory': PropertySchema(
+    r'mainCategoryIsar': PropertySchema(
       id: 4,
-      name: r'mainCategory',
+      name: r'mainCategoryIsar',
       type: IsarType.string,
     ),
-    r'subCategories': PropertySchema(
+    r'subCategoriesIsar': PropertySchema(
       id: 5,
-      name: r'subCategories',
+      name: r'subCategoriesIsar',
       type: IsarType.stringList,
     ),
     r'title': PropertySchema(
@@ -81,11 +81,11 @@ int _articleEstimateSize(
     }
   }
   bytesCount += 3 + object.imagePath.length * 3;
-  bytesCount += 3 + object.mainCategory.length * 3;
-  bytesCount += 3 + object.subCategories.length * 3;
+  bytesCount += 3 + object.mainCategoryIsar.length * 3;
+  bytesCount += 3 + object.subCategoriesIsar.length * 3;
   {
-    for (var i = 0; i < object.subCategories.length; i++) {
-      final value = object.subCategories[i];
+    for (var i = 0; i < object.subCategoriesIsar.length; i++) {
+      final value = object.subCategoriesIsar[i];
       bytesCount += value.length * 3;
     }
   }
@@ -103,8 +103,8 @@ void _articleSerialize(
   writer.writeDateTime(offsets[1], object.createdAt);
   writer.writeString(offsets[2], object.description);
   writer.writeString(offsets[3], object.imagePath);
-  writer.writeString(offsets[4], object.mainCategory);
-  writer.writeStringList(offsets[5], object.subCategories);
+  writer.writeString(offsets[4], object.mainCategoryIsar);
+  writer.writeStringList(offsets[5], object.subCategoriesIsar);
   writer.writeString(offsets[6], object.title);
 }
 
@@ -118,8 +118,8 @@ Article _articleDeserialize(
     colorFamily: reader.readString(offsets[0]),
     description: reader.readStringOrNull(offsets[2]),
     imagePath: reader.readString(offsets[3]),
-    mainCategory: reader.readString(offsets[4]),
-    subCategories: reader.readStringList(offsets[5]) ?? [],
+    mainCategoryIsar: reader.readString(offsets[4]),
+    subCategoriesIsar: reader.readStringList(offsets[5]) ?? [],
     title: reader.readString(offsets[6]),
   );
   object.id = id;
@@ -754,20 +754,21 @@ extension ArticleQueryFilter
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryEqualTo(
+  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryIsarEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryGreaterThan(
+  QueryBuilder<Article, Article, QAfterFilterCondition>
+      mainCategoryIsarGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -775,14 +776,15 @@ extension ArticleQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryLessThan(
+  QueryBuilder<Article, Article, QAfterFilterCondition>
+      mainCategoryIsarLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -790,14 +792,14 @@ extension ArticleQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryBetween(
+  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryIsarBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -806,7 +808,7 @@ extension ArticleQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -816,83 +818,85 @@ extension ArticleQueryFilter
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryStartsWith(
+  QueryBuilder<Article, Article, QAfterFilterCondition>
+      mainCategoryIsarStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryEndsWith(
+  QueryBuilder<Article, Article, QAfterFilterCondition>
+      mainCategoryIsarEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<Article, Article, QAfterFilterCondition>
+      mainCategoryIsarContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryMatches(
+  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryIsarMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> mainCategoryIsEmpty() {
+  QueryBuilder<Article, Article, QAfterFilterCondition>
+      mainCategoryIsarIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: '',
       ));
     });
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      mainCategoryIsNotEmpty() {
+      mainCategoryIsarIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'mainCategory',
+        property: r'mainCategoryIsar',
         value: '',
       ));
     });
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementEqualTo(
+      subCategoriesIsarElementEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -900,7 +904,7 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementGreaterThan(
+      subCategoriesIsarElementGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -908,7 +912,7 @@ extension ArticleQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -916,7 +920,7 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementLessThan(
+      subCategoriesIsarElementLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -924,7 +928,7 @@ extension ArticleQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -932,7 +936,7 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementBetween(
+      subCategoriesIsarElementBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -941,7 +945,7 @@ extension ArticleQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -952,13 +956,13 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementStartsWith(
+      subCategoriesIsarElementStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -966,13 +970,13 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementEndsWith(
+      subCategoriesIsarElementEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -980,10 +984,11 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementContains(String value, {bool caseSensitive = true}) {
+      subCategoriesIsarElementContains(String value,
+          {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -991,10 +996,11 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementMatches(String pattern, {bool caseSensitive = true}) {
+      subCategoriesIsarElementMatches(String pattern,
+          {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -1002,30 +1008,30 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementIsEmpty() {
+      subCategoriesIsarElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: '',
       ));
     });
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesElementIsNotEmpty() {
+      subCategoriesIsarElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'subCategories',
+        property: r'subCategoriesIsar',
         value: '',
       ));
     });
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesLengthEqualTo(int length) {
+      subCategoriesIsarLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'subCategories',
+        r'subCategoriesIsar',
         length,
         true,
         length,
@@ -1034,10 +1040,11 @@ extension ArticleQueryFilter
     });
   }
 
-  QueryBuilder<Article, Article, QAfterFilterCondition> subCategoriesIsEmpty() {
+  QueryBuilder<Article, Article, QAfterFilterCondition>
+      subCategoriesIsarIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'subCategories',
+        r'subCategoriesIsar',
         0,
         true,
         0,
@@ -1047,10 +1054,10 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesIsNotEmpty() {
+      subCategoriesIsarIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'subCategories',
+        r'subCategoriesIsar',
         0,
         false,
         999999,
@@ -1060,13 +1067,13 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesLengthLessThan(
+      subCategoriesIsarLengthLessThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'subCategories',
+        r'subCategoriesIsar',
         0,
         true,
         length,
@@ -1076,13 +1083,13 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesLengthGreaterThan(
+      subCategoriesIsarLengthGreaterThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'subCategories',
+        r'subCategoriesIsar',
         length,
         include,
         999999,
@@ -1092,7 +1099,7 @@ extension ArticleQueryFilter
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition>
-      subCategoriesLengthBetween(
+      subCategoriesIsarLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1100,7 +1107,7 @@ extension ArticleQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'subCategories',
+        r'subCategoriesIsar',
         lower,
         includeLower,
         upper,
@@ -1295,15 +1302,15 @@ extension ArticleQuerySortBy on QueryBuilder<Article, Article, QSortBy> {
     });
   }
 
-  QueryBuilder<Article, Article, QAfterSortBy> sortByMainCategory() {
+  QueryBuilder<Article, Article, QAfterSortBy> sortByMainCategoryIsar() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mainCategory', Sort.asc);
+      return query.addSortBy(r'mainCategoryIsar', Sort.asc);
     });
   }
 
-  QueryBuilder<Article, Article, QAfterSortBy> sortByMainCategoryDesc() {
+  QueryBuilder<Article, Article, QAfterSortBy> sortByMainCategoryIsarDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mainCategory', Sort.desc);
+      return query.addSortBy(r'mainCategoryIsar', Sort.desc);
     });
   }
 
@@ -1382,15 +1389,15 @@ extension ArticleQuerySortThenBy
     });
   }
 
-  QueryBuilder<Article, Article, QAfterSortBy> thenByMainCategory() {
+  QueryBuilder<Article, Article, QAfterSortBy> thenByMainCategoryIsar() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mainCategory', Sort.asc);
+      return query.addSortBy(r'mainCategoryIsar', Sort.asc);
     });
   }
 
-  QueryBuilder<Article, Article, QAfterSortBy> thenByMainCategoryDesc() {
+  QueryBuilder<Article, Article, QAfterSortBy> thenByMainCategoryIsarDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'mainCategory', Sort.desc);
+      return query.addSortBy(r'mainCategoryIsar', Sort.desc);
     });
   }
 
@@ -1436,16 +1443,17 @@ extension ArticleQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Article, Article, QDistinct> distinctByMainCategory(
+  QueryBuilder<Article, Article, QDistinct> distinctByMainCategoryIsar(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'mainCategory', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'mainCategoryIsar',
+          caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<Article, Article, QDistinct> distinctBySubCategories() {
+  QueryBuilder<Article, Article, QDistinct> distinctBySubCategoriesIsar() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'subCategories');
+      return query.addDistinctBy(r'subCategoriesIsar');
     });
   }
 
@@ -1489,16 +1497,16 @@ extension ArticleQueryProperty
     });
   }
 
-  QueryBuilder<Article, String, QQueryOperations> mainCategoryProperty() {
+  QueryBuilder<Article, String, QQueryOperations> mainCategoryIsarProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'mainCategory');
+      return query.addPropertyName(r'mainCategoryIsar');
     });
   }
 
   QueryBuilder<Article, List<String>, QQueryOperations>
-      subCategoriesProperty() {
+      subCategoriesIsarProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'subCategories');
+      return query.addPropertyName(r'subCategoriesIsar');
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wanderly/enums/main_categories.dart';
 import 'package:wanderly/pages/add/add_page_controller.dart';
 import 'package:wanderly/pages/add/views/create_article.dart';
 import 'package:wanderly/pages/add/views/scan_article.dart';
@@ -43,10 +44,10 @@ class AddPage extends GetView<AddPageController> {
                   titleController: controller.titleController,
                   descriptionController: controller.descriptionController,
                   selectedCategory: controller.category.value,
-                  onCategoryChanged: (value) => controller.category.value = value ?? '',
+                  onCategoryChanged: (value) => controller.category.value = value ?? MainCategory.top,
                   selectedSubCategories: controller.subCategories,
                   onSubCategoryChanged: (value) => controller.subCategories.assignAll(value),
-                  selectedColor: controller.color.value,
+                  selectedColor: controller.color.value ?? Colors.orange,
                   onColorChanged: (value) => controller.color.value = value,
                 ),
               );

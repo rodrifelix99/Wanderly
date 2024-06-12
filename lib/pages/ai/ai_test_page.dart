@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
 import 'package:logger/logger.dart';
-import 'package:wanderly/models/article.dart';
 import 'package:wanderly/services/image_service.dart';
 import 'package:wanderly/services/wardrobe_service.dart';
 
@@ -106,14 +105,6 @@ class _AiTestPageState extends State<AiTestPage> {
       if (labels.isEmpty || image == null) {
         return;
       }
-      final article = Article(
-        imagePath: image!.path,
-        title: labels.first.label,
-        colorFamily: '',
-        mainCategory: labels.first.label,
-        subCategories: labels.map((e) => e.label).toList(),
-      );
-      await _wardrobeService.addArticle(article);
     } catch (e) {
       _logger.e(e);
       Get.snackbar(

@@ -5,6 +5,9 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:palette_generator/palette_generator.dart';
+import 'package:wanderly/enums/clothing.dart';
+import 'package:wanderly/enums/main_categories.dart';
 import 'package:wanderly/services/ai_service.dart';
 import 'package:wanderly/services/image_service.dart';
 import 'package:wanderly/services/snackbar_service.dart';
@@ -17,9 +20,9 @@ class AddPageController extends GetxController {
   final Rx<CameraController?> cameraController = Rx<CameraController?>(null);
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final RxString category = ''.obs;
-  final RxList<String> subCategories = <String>[].obs;
-  final RxString color = ''.obs;
+  final Rx<MainCategory> category = MainCategory.top.obs;
+  final RxList<Clothing> subCategories = <Clothing>[].obs;
+  final Rx<Color?> color = Rx<Color?>(null);
   File? image;
 
   @override
@@ -93,10 +96,26 @@ class AddPageController extends GetxController {
     final labels = await AiService.computeImage(imageFile);
     _logger.i(labels.map((e) => '${e.label} (${e.confidence})\n').toList());
     labels.sort((a, b) => b.confidence.compareTo(a.confidence));
+    final String firstLabel = labels.first.label.toLowerCase();
+    final Clothing clothing = Clothing.values.firstWhere(
+      (element) => element.toString().split('.').last == firstLabel,
+      orElse: () => Clothing.unknown,
+    );
     titleController.text = labels.first.label;
-    category.value = labels.first.label;
-    subCategories.value = labels.map((e) => e.label).toList();
-    color.value = labels.first.label;
+    category.value = clothing.mainCategory;
+    for (final label in labels) {
+      final Clothing subCategory = Clothing.values.firstWhere(
+        (element) => element.toString().split('.').last == label.label.toLowerCase(),
+        orElse: () => Clothing.unknown,
+      );
+      if (subCategory != Clothing.unknown && !subCategories.contains(subCategory)) {
+        subCategories.add(subCategory);
+      }
+    }
+    final PaletteGenerator paletteGenerator = await PaletteGenerator.fromImageProvider(
+      FileImage(imageFile),
+    );
+    color.value = paletteGenerator.dominantColor?.color ?? paletteGenerator.colors.first;
   }
 
   @override
