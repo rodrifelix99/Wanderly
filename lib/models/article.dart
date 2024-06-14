@@ -12,7 +12,7 @@ class Article {
   final String imagePath;
   final String title;
   final String? description;
-  final String colorFamily;
+  final int colorFamily;
   final String mainCategoryIsar;
   final List<String> subCategoriesIsar;
   final DateTime createdAt = DateTime.now();

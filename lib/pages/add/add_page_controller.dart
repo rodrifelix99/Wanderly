@@ -2,17 +2,21 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:colornames/colornames.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:wanderly/enums/clothing.dart';
 import 'package:wanderly/enums/main_categories.dart';
+import 'package:wanderly/models/article.dart';
 import 'package:wanderly/services/ai_service.dart';
 import 'package:wanderly/services/image_service.dart';
 import 'package:wanderly/services/snackbar_service.dart';
+import 'package:wanderly/services/wardrobe_service.dart';
 
 class AddPageController extends GetxController {
+  final WardrobeService wardrobeService = Get.find<WardrobeService>();
   final SnackBarService snackBarService = SnackBarService();
   final Logger _logger = Logger();
   final RxBool loading = true.obs;
@@ -22,7 +26,8 @@ class AddPageController extends GetxController {
   final TextEditingController descriptionController = TextEditingController();
   final Rx<MainCategory> category = MainCategory.top.obs;
   final RxList<Clothing> subCategories = <Clothing>[].obs;
-  final Rx<Color?> color = Rx<Color?>(null);
+  final Rx<Color> color = Rx<Color>(const Color(0x00ffffff));
+  final RxString colorFamily = 'white'.obs;
   File? image;
 
   @override
@@ -92,6 +97,7 @@ class AddPageController extends GetxController {
   }
 
   Future<void> _computeImage(File imageFile) async {
+
     await Future.delayed(const Duration(seconds: 5));
     final labels = await AiService.computeImage(imageFile);
     _logger.i(labels.map((e) => '${e.label} (${e.confidence})\n').toList());
@@ -116,6 +122,32 @@ class AddPageController extends GetxController {
       FileImage(imageFile),
     );
     color.value = paletteGenerator.dominantColor?.color ?? paletteGenerator.colors.first;
+    colorFamily.value = color.value.colorName;
+  }
+
+  Future<void> onAddToWardrobe() async {
+    try {
+      loading.value = true;
+      image = await ImageService.saveImage(image!);
+      final Article article = Article(
+        title: titleController.text,
+        description: descriptionController.text,
+        mainCategoryIsar: category.value.name,
+        subCategoriesIsar: subCategories.map((e) => e.name).toList(),
+        colorFamily: color.value.value,
+        imagePath: image!.path,
+      );
+      await wardrobeService.addArticle(article);
+      Get.back();
+    } catch (e) {
+      _logger.e('Error: $e');
+      snackBarService.showSnackBar(
+        title: 'error'.tr,
+        message: 'error'.tr,
+      );
+    } finally {
+      loading.value = false;
+    }
   }
 
   @override

@@ -10,4 +10,5 @@ abstract class Routes {
   static const LOCATION = '/location';
   static const NOTIFICATIONS = '/notifications';
   static const ADD = '/add';
+  static const CHANGE_COLOR = '/color';
 }

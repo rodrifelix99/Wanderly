@@ -47,8 +47,9 @@ class AddPage extends GetView<AddPageController> {
                   onCategoryChanged: (value) => controller.category.value = value ?? MainCategory.top,
                   selectedSubCategories: controller.subCategories,
                   onSubCategoryChanged: (value) => controller.subCategories.assignAll(value),
-                  selectedColor: controller.color.value ?? Colors.orange,
+                  selectedColor: controller.color.value,
                   onColorChanged: (value) => controller.color.value = value,
+                  onAddToWardrobe: () => controller.onAddToWardrobe(),
                 ),
               );
             case 2:

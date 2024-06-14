@@ -17,6 +17,7 @@ class AiTestPage extends StatefulWidget {
 
 class _AiTestPageState extends State<AiTestPage> {
   final Logger _logger = Logger();
+  // ignore: unused_field
   final _wardrobeService = Get.find<WardrobeService>();
   File? image;
   String labels = '';

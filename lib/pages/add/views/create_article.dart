@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:colornames/colornames.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:wanderly/enums/clothing.dart';
 import 'package:wanderly/enums/main_categories.dart';
+import 'package:wanderly/pages/change_color.dart';
 
 class CreateArticle extends StatelessWidget {
   final TextEditingController titleController;
@@ -20,6 +21,7 @@ class CreateArticle extends StatelessWidget {
   final File image;
   final bool isScanning;
   final void Function() onGoBack;
+  final void Function() onAddToWardrobe;
 
   const CreateArticle({
     super.key,
@@ -34,7 +36,22 @@ class CreateArticle extends StatelessWidget {
     required this.onSubCategoryChanged,
     required this.selectedColor,
     required this.onColorChanged,
+    required this.onAddToWardrobe,
   });
+
+  _changeColor() async {
+    final color = await Get.bottomSheet(
+      ClipRRect(
+        borderRadius: BorderRadius.circular(16.0),
+          child: ChangeColor(
+            color: selectedColor,
+          ),
+      ),
+    );
+    if (color != null) {
+      onColorChanged(color);
+    }
+  }
 
   Widget get aiNotice => Container(
         padding: const EdgeInsets.all(16.0),
@@ -104,7 +121,7 @@ class CreateArticle extends StatelessWidget {
                             child: Hero(
                               tag: image.path,
                               child: Image.file(
-                                  image,
+                                image,
                                 width: Get.width,
                                 height: Get.width,
                                 fit: BoxFit.cover,
@@ -136,7 +153,8 @@ class CreateArticle extends StatelessWidget {
                             for (final category in MainCategory.values)
                               DropdownMenuItem(
                                 value: category,
-                                child: Text(category.toString().split('.').last),
+                                child:
+                                    Text(category.toString().split('.').last),
                               ),
                           ],
                         ),
@@ -158,20 +176,54 @@ class CreateArticle extends StatelessWidget {
                         ),
                         const SizedBox(height: 16.0),
                         Container(
-                          color: selectedColor,
                           height: 100.0,
                           width: 100.0,
-                        ),
-                        ColorPicker(
-                          color: selectedColor,
-                          onColorChanged: onColorChanged,
-                          pickersEnabled: const <ColorPickerType, bool>{
-                            ColorPickerType.accent: false,
-                            ColorPickerType.primary: true,
-                            ColorPickerType.bw: false,
-                            ColorPickerType.custom: false,
-                            ColorPickerType.wheel: false,
-                          },
+                          decoration: BoxDecoration(
+                            color: selectedColor,
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  'color_family'.tr,
+                                  textAlign: TextAlign.center,
+                                  style: Get.textTheme.bodyLarge?.copyWith(
+                                    color:
+                                        selectedColor.computeLuminance() > 0.5
+                                            ? Colors.black
+                                            : Colors.white,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(selectedColor.colorName,
+                                        textAlign: TextAlign.center,
+                                        style: Get.textTheme.titleLarge?.copyWith(
+                                          color:
+                                              selectedColor.computeLuminance() > 0.5
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                        ),
+                                    ),
+                                    IconButton(
+                                        onPressed: () => _changeColor(),
+                                        icon: Icon(
+                                          Icons.edit,
+                                          size: 16.0,
+                                          color: selectedColor.computeLuminance() > 0.5
+                                              ? Colors.black
+                                              : Colors.white,
+                                        ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -189,7 +241,7 @@ class CreateArticle extends StatelessWidget {
               const SizedBox(width: 16.0),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: onAddToWardrobe,
                   child: Text('add_to_wardrobe'.tr),
                 ),
               ),

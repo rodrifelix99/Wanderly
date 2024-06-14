@@ -10,6 +10,7 @@ class Languages extends Translations {
       'error_subtitle': 'Something went wrong',
       'no_places_found': 'No places found',
       'next': 'Next',
+      'done': 'Done',
 
       // Login strings
       'welcome_1': 'Welcome to Wanderly',
@@ -43,6 +44,8 @@ class Languages extends Translations {
       'color': 'Color',
       'sub_categories': 'Sub Categories',
       'add_to_wardrobe': 'Add to Wardrobe',
+      'color_family': 'Color Family',
+      'change_color': 'Change Color',
     },
   };
 }

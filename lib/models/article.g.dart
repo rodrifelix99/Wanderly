@@ -20,7 +20,7 @@ const ArticleSchema = CollectionSchema(
     r'colorFamily': PropertySchema(
       id: 0,
       name: r'colorFamily',
-      type: IsarType.string,
+      type: IsarType.long,
     ),
     r'createdAt': PropertySchema(
       id: 1,
@@ -73,7 +73,6 @@ int _articleEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.colorFamily.length * 3;
   {
     final value = object.description;
     if (value != null) {
@@ -99,7 +98,7 @@ void _articleSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.colorFamily);
+  writer.writeLong(offsets[0], object.colorFamily);
   writer.writeDateTime(offsets[1], object.createdAt);
   writer.writeString(offsets[2], object.description);
   writer.writeString(offsets[3], object.imagePath);
@@ -115,7 +114,7 @@ Article _articleDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Article(
-    colorFamily: reader.readString(offsets[0]),
+    colorFamily: reader.readLong(offsets[0]),
     description: reader.readStringOrNull(offsets[2]),
     imagePath: reader.readString(offsets[3]),
     mainCategoryIsar: reader.readString(offsets[4]),
@@ -134,7 +133,7 @@ P _articleDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
       return (reader.readDateTime(offset)) as P;
     case 2:
@@ -242,54 +241,46 @@ extension ArticleQueryWhere on QueryBuilder<Article, Article, QWhereClause> {
 extension ArticleQueryFilter
     on QueryBuilder<Article, Article, QFilterCondition> {
   QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+      int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'colorFamily',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyGreaterThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'colorFamily',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyLessThan(
-    String value, {
+    int value, {
     bool include = false,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'colorFamily',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyBetween(
-    String lower,
-    String upper, {
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
-    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -298,76 +289,6 @@ extension ArticleQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'colorFamily',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'colorFamily',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'colorFamily',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'colorFamily',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Article, Article, QAfterFilterCondition> colorFamilyIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'colorFamily',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Article, Article, QAfterFilterCondition>
-      colorFamilyIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'colorFamily',
-        value: '',
       ));
     });
   }
@@ -1416,10 +1337,9 @@ extension ArticleQuerySortThenBy
 
 extension ArticleQueryWhereDistinct
     on QueryBuilder<Article, Article, QDistinct> {
-  QueryBuilder<Article, Article, QDistinct> distinctByColorFamily(
-      {bool caseSensitive = true}) {
+  QueryBuilder<Article, Article, QDistinct> distinctByColorFamily() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'colorFamily', caseSensitive: caseSensitive);
+      return query.addDistinctBy(r'colorFamily');
     });
   }
 
@@ -1473,7 +1393,7 @@ extension ArticleQueryProperty
     });
   }
 
-  QueryBuilder<Article, String, QQueryOperations> colorFamilyProperty() {
+  QueryBuilder<Article, int, QQueryOperations> colorFamilyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'colorFamily');
     });
